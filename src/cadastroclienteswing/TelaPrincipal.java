@@ -44,6 +44,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         tabelaClientes = new javax.swing.JTable();
         btnExcluir = new javax.swing.JButton();
+        btnAlterar = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         menuItemSair = new javax.swing.JMenuItem();
@@ -98,6 +99,13 @@ public class TelaPrincipal extends javax.swing.JFrame {
             }
         });
 
+        btnAlterar.setText("Alterar");
+        btnAlterar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAlterarActionPerformed(evt);
+            }
+        });
+
         jMenu1.setText("Opções");
 
         menuItemSair.setText("Sair");
@@ -125,7 +133,9 @@ public class TelaPrincipal extends javax.swing.JFrame {
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(btnSalvar)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(btnExcluir))
+                                .addComponent(btnExcluir)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(btnAlterar))
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(lblNome)
                                 .addGap(18, 18, 18)
@@ -149,7 +159,8 @@ public class TelaPrincipal extends javax.swing.JFrame {
                 .addGap(34, 34, 34)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnSalvar)
-                    .addComponent(btnExcluir))
+                    .addComponent(btnExcluir)
+                    .addComponent(btnAlterar))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
@@ -207,11 +218,35 @@ public class TelaPrincipal extends javax.swing.JFrame {
 
     private void btnExcluirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExcluirActionPerformed
         int linhaSelecionada = tabelaClientes.getSelectedRow();
+       
+        if(linhaSelecionada >= 0){
+           int confirmacao = JOptionPane.showConfirmDialog(this,"Deseja excluir?", "ATENÇÃO", 
+                         JOptionPane.NO_OPTION,
+                         JOptionPane.QUESTION_MESSAGE);   
+            if(confirmacao == JOptionPane.YES_OPTION){
         Long cpf = (Long) tabelaClientes.getValueAt(linhaSelecionada, 1);
-        
         this.iClienteDAO.excluir(cpf);
-         JOptionPane.showMessageDialog(null, "Registro excluído!", "", JOptionPane.INFORMATION_MESSAGE); 
+        tabModelo.removeRow(linhaSelecionada);
+        
+         JOptionPane.showMessageDialog(null, "Registro excluído!", "", JOptionPane.INFORMATION_MESSAGE);
+         limparCampos();
+        }   
+        }else{
+           JOptionPane.showMessageDialog(null, "Nenhum cliente selecionado", "", JOptionPane.INFORMATION_MESSAGE);
+        }
     }//GEN-LAST:event_btnExcluirActionPerformed
+
+    private void btnAlterarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAlterarActionPerformed
+        int linhaSelecionada = tabelaClientes.getSelectedRow();
+     Long cpf = (Long) tabelaClientes.getValueAt(linhaSelecionada, 1);
+     
+     Cliente cliente = this.iClienteDAO.consultar(cpf);
+     
+     txtNome.setText(cliente.getNome());
+     txtCpf.setText(String.valueOf(cliente.getCpf()));
+        
+        
+    }//GEN-LAST:event_btnAlterarActionPerformed
 
     /**
      * @param args the command line arguments
@@ -249,6 +284,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnAlterar;
     private javax.swing.JButton btnExcluir;
     private javax.swing.JButton btnSalvar;
     private javax.swing.JMenu jMenu1;
